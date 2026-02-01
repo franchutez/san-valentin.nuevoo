@@ -2,41 +2,180 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>San Valentín 💚</title>
+  <title>Fd 💖</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    /* Body y fondo rosa con glitter animado */
     body {
       margin: 0;
       height: 100vh;
-      background-color: #dff3e3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: 'Pacifico', cursive;
+      background: #f8c1d0;
+      overflow: hidden;
+      cursor: none; /* ocultamos cursor por defecto */
+      position: relative;
     }
 
+    /* Líneas dibujadas a mano */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image:
+        linear-gradient(white 1px, transparent 1px),
+        linear-gradient(90deg, white 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    /* Glitter animado */
+    .glitter {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      animation: glitterMove 3s infinite;
+      opacity: 0.8;
+    }
+    @keyframes glitterMove {
+      0% {transform: translateY(0px) translateX(0px);}
+      50% {transform: translateY(20px) translateX(10px);}
+      100% {transform: translateY(0px) translateX(0px);}
+    }
+
+    /* Tarjeta central */
     .card {
+      position: relative;
+      z-index: 10;
       background: #ffffffdd;
       padding: 40px;
       border-radius: 30px;
       text-align: center;
-      max-width: 420px;
+      max-width: 500px;
+      margin: auto;
+      top: 50%;
+      transform: translateY(-50%);
       box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-      position: relative;
     }
 
     h1 {
+      color: #7b0b0b;
       font-size: 42px;
-      color: #2f5d50;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
+
+    /* Corazones de Sí/No */
+    .options {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+    }
+
+    .heart {
+      width: 100px;
+      height: 100px;
+      background: #f06292;
+      clip-path: polygon(50% 0%, 61% 12%, 75% 20%, 85% 36%, 85% 55%, 75% 70%, 50% 90%, 25% 70%, 15% 55%, 15% 36%, 25% 20%, 39% 12%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+    }
+    .heart:hover {
+      transform: scale(1.1);
+    }
+
+    /* Cursor-gatito */
+    .cursor-cat {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: url('https://i.imgur.com/9yKxF9U.png') no-repeat center/contain; /* gatito negro animado */
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Confetti gatitos */
+    .confetti-cat {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-size: cover;
+      pointer-events: none;
+      z-index: 15;
+    }
+
   </style>
 </head>
 <body>
+
+  <!-- Tarjeta central -->
   <div class="card">
-    <h1>Feliz San Valentín 💚</h1>
-    <p>Tu web está funcionando, capi 😎</p>
+    <h1>fd, ¿querés pasar este 14 juntos?</h1>
+    <div class="options">
+      <div class="heart" id="yes">Sí</div>
+      <div class="heart" id="no">No</div>
+    </div>
+    <p style="margin-top:20px; font-size:18px; color:#7b0b0b;">Fran 🌷</p>
   </div>
+
+  <!-- Cursor gatito -->
+  <div class="cursor-cat" id="cursor"></div>
+
+  <script>
+    // Glitter aleatorio
+    for(let i=0;i<50;i++){
+      let g = document.createElement('div');
+      g.className='glitter';
+      g.style.top = Math.random()*100 + 'vh';
+      g.style.left = Math.random()*100 + 'vw';
+      document.body.appendChild(g);
+    }
+
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e=>{
+      cursor.style.left = e.clientX - 25 + 'px';
+      cursor.style.top = e.clientY - 25 + 'px';
+
+      // Mover "No" si el cursor se acerca
+      const no = document.getElementById('no');
+      const rect = no.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width/2);
+      const dy = e.clientY - (rect.top + rect.height/2);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 100){
+        no.style.transform = `translate(${Math.random()*120-60}px, ${Math.random()*120-60}px)`;
+      } else {
+        no.style.transform = 'translate(0,0)';
+      }
+    });
+
+    // Confetti de gatitos al hacer clic en "Sí"
+    document.getElementById('yes').addEventListener('click', ()=>{
+      for(let i=0;i<30;i++){
+        let cat = document.createElement('div');
+        cat.className='confetti-cat';
+        cat.style.top = '-30px';
+        cat.style.left = Math.random()*window.innerWidth + 'px';
+        cat.style.backgroundImage = `url('https://i.imgur.com/${['1c8TjZG','xXNxk6J','b6ZzY9V','S8L8V1G','lM4K7fK'][Math.floor(Math.random()*5)]}.png')`; // gatitos felices aleatorios
+        document.body.appendChild(cat);
+        let anim = cat.animate([
+          {transform: `translateY(0px)`},
+          {transform: `translateY(${window.innerHeight+30}px) rotate(${Math.random()*360}deg)`}
+        ], {duration: 3000+Math.random()*2000, easing:'ease-out'});
+        anim.onfinish = ()=>cat.remove();
+      }
+    });
+  </script>
+
 </body>
 </html>
