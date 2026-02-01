@@ -1,165 +1,285 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Fd 💖</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<style>
-  body {
-    margin:0;
-    height:100vh;
-    font-family:'Pacifico',cursive;
-    background:#f8c1d0;
-    overflow:hidden;
-    cursor:none;
-    position:relative;
-  }
-
-  /* Fondo con líneas blancas */
-  body::before{
-    content:'';
-    position:absolute;
-    width:200%;
-    height:200%;
-    top:-50%;
-    left:-50%;
-    background-image:
-      linear-gradient(white 1px, transparent 1px),
-      linear-gradient(90deg, white 1px, transparent 1px);
-    background-size:50px 50px;
-    opacity:0.2;
-    pointer-events:none;
-  }
-
-  /* Glitter animado */
-  .glitter{
-    position:absolute;
-    width:5px;height:5px;
-    background:white;border-radius:50%;
-    animation:glitterMove 3s infinite;
-    opacity:0.8;
-  }
-  @keyframes glitterMove{
-    0%{transform:translateY(0px) translateX(0px);}
-    50%{transform:translateY(20px) translateX(10px);}
-    100%{transform:translateY(0px) translateX(0px);}
-  }
-
-  /* Tarjeta central */
-  .card{
-    position:relative;
-    z-index:10;
-    background:#ffffffdd;
-    padding:40px;
-    border-radius:30px;
-    text-align:center;
-    max-width:500px;
-    margin:auto;
-    top:50%;
-    transform:translateY(-50%);
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
-  }
-  h1{
-    color:#7b0b0b;
-    font-size:42px;
-    margin-bottom:30px;
-  }
-
-  /* Corazones */
-  .options{
-    display:flex;
-    justify-content:center;
-    gap:50px;
-  }
-  .heart{
-    width:100px;height:100px;
-    background:#f06292;
-    clip-path:polygon(50% 0%,61% 12%,75% 20%,85% 36%,85% 55%,75% 70%,50% 90%,25% 70%,15% 55%,15% 36%,25% 20%,39% 12%);
-    display:flex;align-items:center;justify-content:center;
-    color:white;font-size:24px;
-    cursor:pointer;
-    transition:transform 0.3s;
-    position:relative;
-  }
-  .heart:hover{transform:scale(1.1);}
-
-  /* Cursor-gatito */
-  .cursor-cat{
-    position:absolute;
-    width:50px;height:50px;
-    background:url('https://i.imgur.com/9yKxF9U.png') no-repeat center/contain;
-    pointer-events:none;
-    z-index:20;
-  }
-
-  /* Confetti gatitos */
-  .confetti-cat{
-    position:absolute;width:30px;height:30px;
-    background-size:cover;
-    pointer-events:none;
-    z-index:15;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Página San Valentín</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fuente Pacifico de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos base */
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      background-color: #f8c1d0;
+      overflow: hidden;
+      font-family: 'Pacifico', cursive;
+      cursor: none; /* ocultar cursor nativo */
+    }
+    /* Canvas de fondo */
+    #canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+    }
+    /* Contenedor central */
+    #container {
+      position: relative;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      color: #7b0b0b; /* texto principal bordó oscuro */
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0.5em;
+      padding: 0 1em;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+    }
+    /* Corazones de respuesta */
+    #hearts {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      margin-top: 1em;
+    }
+    .heart-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .heart-text {
+      margin-bottom: 0.5em;
+      color: #fff;
+      font-size: 1.5rem;
+      z-index: 1;
+      text-shadow: 0 0 5px #000;
+    }
+    /* Forma de corazón con CSS (basado en pseudo-elementos)12 */
+    .heart-shape {
+      width: 100px; height: 90px;
+      background: pink;
+      position: relative;
+      transform: rotate(-45deg);
+      margin: 0.5em;
+    }
+    .heart-shape:before,
+    .heart-shape:after {
+      content: "";
+      position: absolute;
+      width: 100px; height: 90px;
+      background: pink;
+      border-radius: 50%;
+    }
+    .heart-shape:before { top: -50px; left: 0; }
+    .heart-shape:after  { left: 50px; top: 0; }
+    /* Colores para cada opción */
+    #yesOption .heart-shape {
+      background: #f1a3c5;
+    }
+    #yesOption .heart-shape:before,
+    #yesOption .heart-shape:after {
+      background: #f1a3c5;
+    }
+    #noOption .heart-shape {
+      background: #000;
+    }
+    #noOption .heart-shape:before,
+    #noOption .heart-shape:after {
+      background: #000;
+    }
+    #noOption .heart-text {
+      color: #f8c1d0;
+      text-shadow: 0 0 5px #000;
+    }
+    /* Imagen de cursor personalizada */
+    #cursor {
+      position: absolute;
+      width: 40px; height: 40px;
+      z-index: 1000;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+    /* Confetti de gatitos */
+    .confetti {
+      position: absolute;
+      font-size: 24px;
+      animation: fall 3s linear;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(100vh); }
+    }
+    /* Brillos (glitter) */
+    .glitter {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkle 4s infinite;
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; }
+      50%      { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-  <h1>fd, ¿querés pasar este 14 juntos?</h1>
-  <div class="options">
-    <div class="heart" id="yes">Sí</div>
-    <div class="heart" id="no">No</div>
+  <canvas id="canvas"></canvas>
+  <div id="container">
+    <h1>fd, ¿querés pasar este 14 juntos?</h1>
+    <div id="hearts">
+      <div class="heart-option" id="yesOption">
+        <div class="heart-text">Sí</div>
+        <div class="heart-shape"></div>
+      </div>
+      <div class="heart-option" id="noOption">
+        <div class="heart-text">No</div>
+        <div class="heart-shape"></div>
+      </div>
+    </div>
   </div>
-  <p style="margin-top:20px;font-size:18px;color:#7b0b0b;">Fran 🌷</p>
-</div>
+  <!-- Cursor personalizado: imagen de gato en base64 -->
+  <img id="cursor" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAABUzhmAAAAAXNSR0IArs4c6QAAABxpRE9UAAAAAgAAAAAAAABBbWwgQ29yZSBrb290IHNvZnQgZGlnZXN0ZXIgc3llbmEKIQAAANYSURBVHgB7Zh7SgNBEIb7qTRRoEDi3gUeBA4gpAIhgEIQVhE2QrsHdWKRCCGLAhNBAjwEQsIDNDFYpBdgJSXLBl+aZ+bW5szuzvgvUdKkc2Z5d7fW9+TFX6jKRffO6oSGpAJSoAlOQCUqAlOkAlOoJbQFw92MFv3EEuLRWAGGwIAHGMYgnL8Bgm52m7/M4w4n3sPrCtWIi4D6Y2cDHBKAnARVLLeIsBtliGxPWIzClV1wawLnBsebfmyW+34a0poSjw33A6+Pg29IQVMWVNsHuDXstD1sYJaAXOSB3BoQ/W5nXAHjIKB6cUldvpUbGAhNpMAR...">
+  <script>
+    // Variables de canvas
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth, H = window.innerHeight;
 
-<div class="cursor-cat" id="cursor"></div>
-
-<script>
-  // Glitter
-  for(let i=0;i<50;i++){
-    let g=document.createElement('div');
-    g.className='glitter';
-    g.style.top=Math.random()*100+'vh';
-    g.style.left=Math.random()*100+'vw';
-    document.body.appendChild(g);
-  }
-
-  // Cursor
-  const cursor=document.getElementById('cursor');
-  document.addEventListener('mousemove',e=>{
-    cursor.style.left=e.clientX-25+'px';
-    cursor.style.top=e.clientY-25+'px';
-    
-    const no=document.getElementById('no');
-    const rect=no.getBoundingClientRect();
-    const dx=e.clientX-(rect.left+rect.width/2);
-    const dy=e.clientY-(rect.top+rect.height/2);
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<100){
-      no.style.transform=`translate(${Math.random()*120-60}px,${Math.random()*120-60}px)`;
-    }else{
-      no.style.transform='translate(0,0)';
+    // Redimensionar canvas y dibujar fondo
+    function resizeCanvas() {
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+      drawBackground();
     }
-  });
+    window.addEventListener('resize', resizeCanvas);
 
-  // Confetti gatitos
-  const catImgs=[
-    '1c8TjZG','xXNxk6J','b6ZzY9V','S8L8V1G','lM4K7fK'
-  ];
-  document.getElementById('yes').addEventListener('click',()=>{
-    for(let i=0;i<30;i++){
-      let cat=document.createElement('div');
-      cat.className='confetti-cat';
-      cat.style.top='-30px';
-      cat.style.left=Math.random()*window.innerWidth+'px';
-      cat.style.backgroundImage=`url('https://i.imgur.com/${catImgs[Math.floor(Math.random()*catImgs.length)]}.png')`;
-      document.body.appendChild(cat);
-      let anim=cat.animate([
-        {transform:`translateY(0px)`},
-        {transform:`translateY(${window.innerHeight+30}px) rotate(${Math.random()*360}deg)`}
-      ],{duration:3000+Math.random()*2000,easing:'ease-out'});
-      anim.onfinish=()=>cat.remove();
+    function drawBackground() {
+      // Fondo rosa
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#f8c1d0'; // base pink
+      ctx.fillRect(0, 0, W, H);
+      // Líneas blancas aleatorias (estilo dibujado a mano)
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      for (let i = 0; i < 10; i++) {
+        ctx.lineWidth = Math.random()*3 + 1;
+        ctx.beginPath();
+        if (Math.random() < 0.5) {
+          // horizontal
+          let y = Math.random()*H;
+          ctx.moveTo(0, y);
+          for (let j=1; j<=10; j++){
+            let x = j*(W/10);
+            let deltaY = (Math.random()-0.5)*20;
+            ctx.lineTo(x, y + deltaY);
+          }
+        } else {
+          // vertical
+          let x = Math.random()*W;
+          ctx.moveTo(x, 0);
+          for (let j=1; j<=10; j++){
+            let y = j*(H/10);
+            let deltaX = (Math.random()-0.5)*20;
+            ctx.lineTo(x + deltaX, y);
+          }
+        }
+        ctx.stroke();
+      }
+      // Dibujar corazones decorativos en el fondo
+      function drawHeart(x, y, size, color, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(size, size);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(0, -0.5, -0.5, -0.5, -0.5, -0.1);
+        ctx.bezierCurveTo(-0.5, 0.2, -0.2, 0.35, 0, 0.5);
+        ctx.bezierCurveTo(0.2, 0.35, 0.5, 0.2, 0.5, -0.1);
+        ctx.bezierCurveTo(0.5, -0.5, 0, -0.5, 0, 0);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = alpha;
+        ctx.fill();
+        ctx.restore();
+      }
+      // Colores suaves para corazones de fondo
+      const colors = ['#f8c1d0','#f1a3c5','#ffd1dc'];
+      for (let i = 0; i < 8; i++) {
+        let size = (Math.random()*0.8 + 0.3) * 50;
+        let x = Math.random() * (W - size*2) + size;
+        let y = Math.random() * (H - size*2) + size;
+        let color = colors[Math.floor(Math.random()*colors.length)];
+        drawHeart(x, y, size/50, color, 0.4);
+      }
     }
-  });
-</script>
+    resizeCanvas();
+
+    // Generar brillos (glitter)
+    function createGlitter() {
+      const count = 30;
+      for (let i = 0; i < count; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('glitter');
+        sparkle.style.left = Math.random()*100 + 'vw';
+        sparkle.style.top = Math.random()*100 + 'vh';
+        sparkle.style.animationDuration = (2 + Math.random()*3) + 's';
+        sparkle.style.animationDelay = (Math.random()*5) + 's';
+        document.body.appendChild(sparkle);
+      }
+    }
+    createGlitter();
+
+    // Lógica de cursor personalizado y evasión
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      // Mover imagen de gato con el ratón
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      // Detectar cercanía al corazón "No"
+      const noHeart = document.getElementById('noOption');
+      const rect = noHeart.getBoundingClientRect();
+      const hx = rect.left + rect.width/2;
+      const hy = rect.top  + rect.height/2;
+      const dx = hx - e.clientX;
+      const dy = hy - e.clientY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 100) {
+        // Si el cursor está cerca, desplazar el corazón lejos
+        const moveX = (dx/dist) * 50;
+        const moveY = (dy/dist) * 50;
+        noHeart.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      }
+    });
+
+    // Confetti de gatitos al hacer clic en "Sí"
+    document.getElementById('yesOption').addEventListener('click', e => {
+      for (let i = 0; i < 20; i++) {
+        const cat = document.createElement('div');
+        cat.classList.add('confetti');
+        cat.textContent = '😺';
+        // Posición horizontal aleatoria cerca del centro
+        cat.style.left = (window.innerWidth * 0.5 + (Math.random()-0.5)*200) + 'px';
+        cat.style.top = '0px';
+        cat.style.fontSize = (20 + Math.random()*20) + 'px';
+        document.body.appendChild(cat);
+        // Eliminar tras la animación
+        setTimeout(() => cat.remove(), 3000);
+      }
+    });
+    // Prevenir que "No" sea clickeable directamente
+    document.getElementById('noOption').addEventListener('click', e => {
+      e.preventDefault();
+    });
+  </script>
 </body>
 </html>
