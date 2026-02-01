@@ -13,227 +13,142 @@
       --heart-black:#000000;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'Pacifico',cursive;background:var(--pink);overflow:hidden;cursor:none;}
-    /* canvas fundo ocupa todo */
-    #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2}
-    /* glitter (divs) */
-    .glitter{position:fixed;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.9);opacity:0;pointer-events:none;animation:spark 4s linear infinite}
-    @keyframes spark{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
-    /* contenedor central */
-    #wrap{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-    .card-like{background:rgba(255,255,255,0.06);padding:28px 20px;border-radius:22px;max-width:920px;width:100%}
-    h1{color:var(--bordo);font-size:clamp(28px,6.5vw,56px);margin:0 0 18px;line-height:1.02}
-    p.signature{margin-top:18px;color:var(--bordo);font-size:18px}
-    /* corazones */
-    #hearts{display:flex;gap:36px;justify-content:center;align-items:flex-start;margin-top:8px}
-    .option{display:flex;flex-direction:column;align-items:center;user-select:none}
-    .label{font-size:20px;color:#fff;margin-bottom:10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))}
-    /* corazón con pseudo elementos */
-    .heart{
-      width:120px;height:110px;position:relative;transform:rotate(-45deg);transition:transform .28s ease;
-      display:block;
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:'Pacifico',cursive;
+      background:var(--pink);
+      overflow:hidden;
+      cursor:none;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
-    .heart:before,.heart:after{content:"";position:absolute;width:120px;height:110px;border-radius:60px;background:var(--heart-pink)}
+
+    /* canvas fondo líneas y corazones */
+    #bgCanvas{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:-2;
+    }
+
+    /* glitter (divs) */
+    .glitter{
+      position:fixed;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.9);
+      opacity:0;
+      pointer-events:none;
+      animation:spark 4s linear infinite;
+    }
+    @keyframes spark{
+      0%{opacity:0}
+      40%{opacity:1}
+      100%{opacity:0}
+    }
+
+    /* tarjeta central */
+    #wrap{
+      position:relative;
+      text-align:center;
+      z-index:5;
+      padding:20px;
+    }
+    .card-like{
+      background:rgba(255,255,255,0.06);
+      padding:28px 20px;
+      border-radius:22px;
+      max-width:500px;
+      margin:auto;
+    }
+
+    h1{
+      color:var(--bordo);
+      font-size:clamp(28px,6vw,56px);
+      margin:0 0 25px;
+      line-height:1.05;
+    }
+    p.signature{
+      margin-top:18px;
+      color:var(--bordo);
+      font-size:18px;
+    }
+
+    /* corazones Sí/No */
+    #hearts{
+      display:flex;
+      gap:40px;
+      justify-content:center;
+      align-items:flex-start;
+      margin-top:12px;
+    }
+    .option{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      user-select:none;
+    }
+    .label{
+      font-size:22px;
+      margin-bottom:8px;
+      color:#fff;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    }
+
+    .heart{
+      width:120px;
+      height:110px;
+      position:relative;
+      transform:rotate(-45deg);
+      display:block;
+      transition:transform .28s ease;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:120px;
+      height:110px;
+      border-radius:60px;
+      background:var(--heart-pink);
+    }
     .heart:before{top:-55px;left:0}
     .heart:after{left:55px;top:0}
-    /* color variantes */
+
     #yes .heart,#yes .heart:before,#yes .heart:after{background:var(--heart-pink)}
     #no .heart,#no .heart:before,#no .heart:after{background:var(--heart-black)}
-    /* para que el texto dentro del corazón se vea bien, lo ponemos rotado inverso */
-    .heart-inner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:100%;text-align:center;font-size:22px;color:white;pointer-events:none}
-    /* hover */
-    #yes .heart:hover{transform:rotate(-45deg) scale(1.06)}
-    /* cursor gatito: usamos emoji dentro de un div para que siempre cargue */
+
+    .heart-inner{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) rotate(45deg);
+      width:100%;
+      text-align:center;
+      font-size:26px;
+      color:white;
+      pointer-events:none;
+    }
+
+    #yes .heart:hover{transform:rotate(-45deg) scale(1.08)}
+
+    /* cursor-gatito */
     #cursor{
-      position:fixed;left:50%;top:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;
-      font-size:30px;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);transition:transform .06s linear;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.45);
-    }
-    /* confetti (emojis) */
-    .confetti{
-      position:fixed;left:0;top:0;font-size:20px;pointer-events:none;opacity:1;
-      animation:fall linear forwards;
-      text-shadow:0 2px 4px rgba(0,0,0,0.35);
-    }
-    @keyframes fall{
-      0%{transform:translateY(-10vh) rotate(0deg);opacity:1}
-      100%{transform:translateY(110vh) rotate(360deg);opacity:0}
-    }
-
-    /* responsivo corazón más chico en móvil */
-    @media (max-width:420px){
-      .heart{width:86px;height:78px}
-      .heart:before,.heart:after{width:86px;height:78px;border-radius:44px}
-      .heart-inner{font-size:18px}
-      .label{font-size:18px}
-    }
-  </style>
-</head>
-<body>
-
-  <canvas id="bgCanvas"></canvas>
-
-  <div id="wrap" aria-hidden="false">
-    <div class="card-like" role="main">
-      <h1>fd, ¿querés pasar este 14 juntos?</h1>
-
-      <div id="hearts" aria-hidden="false">
-        <div class="option" id="yes" role="button" tabindex="0" aria-label="Si">
-          <div class="label" style="color:#fff">Sí</div>
-          <div class="heart" aria-hidden="true"><div class="heart-inner"> </div></div>
-        </div>
-
-        <div class="option" id="no" role="button" tabindex="0" aria-label="No">
-          <div class="label" style="color:#f8c1d0">No</div>
-          <div class="heart" aria-hidden="true"><div class="heart-inner"> </div></div>
-        </div>
-      </div>
-
-      <p class="signature">Fran 🌷</p>
-    </div>
-  </div>
-
-  <!-- cursor-gatito (emoji, movimiento con JS) -->
-  <div id="cursor">🐈</div>
-
-  <script>
-    // ---------- Fondo canvas: líneas dibujadas a mano y corazones decor ----------
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    function fitCanvas(){
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
-      drawBg();
-    }
-    window.addEventListener('resize', fitCanvas);
-    function drawBg(){
-      const W = canvas.width, H = canvas.height;
-      // fondo
-      ctx.clearRect(0,0,W,H);
-      ctx.fillStyle = '#f8c1d0';
-      ctx.fillRect(0,0,W,H);
-      // líneas "dibujadas a mano" horizontales/verticales
-      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-      for(let i=0;i<12;i++){
-        ctx.lineWidth = 1 + Math.random()*3; // grosores distintos
-        ctx.beginPath();
-        if(Math.random()<0.5){
-          // horizontal-ish with small wobble
-          let y = (i+1)*(H/13) + (Math.random()-0.5)*18;
-          ctx.moveTo(0,y);
-          for(let x=0;x<=W;x+=W/20){
-            ctx.lineTo(x, y + (Math.random()-0.5)*18);
-          }
-        } else {
-          let x = (i+1)*(W/13) + (Math.random()-0.5)*18;
-          ctx.moveTo(x,0);
-          for(let y=0;y<=H;y+=H/20){
-            ctx.lineTo(x + (Math.random()-0.5)*18, y);
-          }
-        }
-        ctx.stroke();
-      }
-      // corazones decorativos (dibujados con curvas simples)
-      function drawHeart(cx, cy, s, color, alpha){
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.scale(s,s);
-        ctx.beginPath();
-        ctx.moveTo(0,-20);
-        ctx.bezierCurveTo(-25,-40,-60,-10,-10,20);
-        ctx.bezierCurveTo(-5,30,5,34,10,20);
-        ctx.bezierCurveTo(60,-10,25,-40,0,-20);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.globalAlpha = alpha;
-        ctx.fill();
-        ctx.restore();
-        ctx.globalAlpha = 1;
-      }
-      const colors = ['#ffd1dc','#f1a3c5','#fff0f4'];
-      for(let i=0;i<8;i++){
-        const s = (Math.random()*0.9+0.3);
-        const x = Math.random()*(W-100)+50;
-        const y = Math.random()*(H-200)+80;
-        drawHeart(x,y,s, colors[Math.floor(Math.random()*colors.length)], 0.35);
-      }
-    }
-    fitCanvas();
-
-    // ---------- glitter (divs) ----------
-    function createGlitter(n=30){
-      for(let i=0;i<n;i++){
-        const d = document.createElement('div');
-        d.className = 'glitter';
-        d.style.left = (Math.random()*100) + 'vw';
-        d.style.top  = (Math.random()*100) + 'vh';
-        d.style.animationDuration = (2+Math.random()*4)+'s';
-        d.style.animationDelay = (Math.random()*3)+'s';
-        document.body.appendChild(d);
-      }
-    }
-    createGlitter(28);
-
-    // ---------- cursor-gatito y evasión del NO ----------
-    const cursor = document.getElementById('cursor');
-    const noOption = document.getElementById('no');
-    const yesOption = document.getElementById('yes');
-
-    document.addEventListener('mousemove', e=>{
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top  = e.clientY + 'px';
-      cursor.style.transform = 'translate(-50%,-50%) scale(1.02)';
-
-      // evitar que el "No" se pueda clickear: lo empujamos lejos si el cursor se acerca
-      const rect = noOption.getBoundingClientRect();
-      const hx = rect.left + rect.width/2;
-      const hy = rect.top + rect.height/2;
-      const dx = hx - e.clientX;
-      const dy = hy - e.clientY;
-      const dist = Math.hypot(dx,dy);
-      if(dist < 110){
-        // empujar lejos (vector normalizado * distancia)
-        const nx = (dx/dist || 0) * 90; // evita NaN
-        const ny = (dy/dist || 0) * 70;
-        noOption.style.transform = `translate(${nx}px, ${ny}px)`;
-      } else {
-        noOption.style.transform = 'translate(0,0)';
-      }
-    });
-
-    // También evitar clicks por teclado accidental en "No"
-    noOption.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation(); });
-
-    // ---------- confetti de gatitos (emojis) al click en Sí ----------
-    function makeConfetti(count=22){
-      for(let i=0;i<count;i++){
-        const el = document.createElement('div');
-        el.className = 'confetti';
-        el.textContent = ['😺','😸','😻','🐱','💘','💖'][Math.floor(Math.random()*6)];
-        const startX = window.innerWidth*0.5 + (Math.random()-0.5)*260;
-        el.style.left = startX + 'px';
-        el.style.top  = (-20 - Math.random()*80) + 'px';
-        el.style.fontSize = (18 + Math.random()*28) + 'px';
-        el.style.animationDuration = (3 + Math.random()*2) + 's';
-        el.style.transform = `rotate(${Math.random()*360}deg)`;
-        document.body.appendChild(el);
-        setTimeout(()=> el.remove(), 5200);
-      }
-    }
-    yesOption.addEventListener('click', e=>{
-      makeConfetti(26);
-      // pequeña micro-interacción: agrandar corazon por un momento
-      const heartEl = yesOption.querySelector('.heart');
-      heartEl.style.transform = 'rotate(-45deg) scale(1.08)';
-      setTimeout(()=> heartEl.style.transform = 'rotate(-45deg) scale(1)', 500);
-    });
-
-    // accesibilidad: Enter/Space trigger
-    yesOption.addEventListener('keydown', ev=>{ if(ev.key === 'Enter' || ev.key === ' ') { yesOption.click(); } });
-    noOption.addEventListener('keydown', ev=>{ if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); } });
-
-    // evitamos que el no sea foco persistente (lo devolvemos si cambian ventana)
-    window.addEventListener('blur', ()=> noOption.style.transform='translate(0,0)');
-  </script>
-</body>
-</html>
+      position:fixed;
+      left:50%;
+      top:50%;
+      width:46px;
+      height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:30px;
+      z-index:9999;
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      transition:transform .06s linear;
+      text-shadow: 0 2px 6px rgba(0
