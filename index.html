@@ -1,285 +1,239 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Página San Valentín</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuente Pacifico de Google Fonts -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Fd 💖</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
-    /* Estilos base */
-    body, html {
-      margin: 0; padding: 0;
-      height: 100%;
-      background-color: #f8c1d0;
-      overflow: hidden;
-      font-family: 'Pacifico', cursive;
-      cursor: none; /* ocultar cursor nativo */
+    :root{
+      --pink:#f8c1d0;
+      --bordo:#7b0b0b;
+      --heart-pink:#f1a3c5;
+      --heart-black:#000000;
     }
-    /* Canvas de fondo */
-    #canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Pacifico',cursive;background:var(--pink);overflow:hidden;cursor:none;}
+    /* canvas fundo ocupa todo */
+    #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2}
+    /* glitter (divs) */
+    .glitter{position:fixed;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.9);opacity:0;pointer-events:none;animation:spark 4s linear infinite}
+    @keyframes spark{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+    /* contenedor central */
+    #wrap{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+    .card-like{background:rgba(255,255,255,0.06);padding:28px 20px;border-radius:22px;max-width:920px;width:100%}
+    h1{color:var(--bordo);font-size:clamp(28px,6.5vw,56px);margin:0 0 18px;line-height:1.02}
+    p.signature{margin-top:18px;color:var(--bordo);font-size:18px}
+    /* corazones */
+    #hearts{display:flex;gap:36px;justify-content:center;align-items:flex-start;margin-top:8px}
+    .option{display:flex;flex-direction:column;align-items:center;user-select:none}
+    .label{font-size:20px;color:#fff;margin-bottom:10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))}
+    /* corazón con pseudo elementos */
+    .heart{
+      width:120px;height:110px;position:relative;transform:rotate(-45deg);transition:transform .28s ease;
+      display:block;
     }
-    /* Contenedor central */
-    #container {
-      position: relative;
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      color: #7b0b0b; /* texto principal bordó oscuro */
+    .heart:before,.heart:after{content:"";position:absolute;width:120px;height:110px;border-radius:60px;background:var(--heart-pink)}
+    .heart:before{top:-55px;left:0}
+    .heart:after{left:55px;top:0}
+    /* color variantes */
+    #yes .heart,#yes .heart:before,#yes .heart:after{background:var(--heart-pink)}
+    #no .heart,#no .heart:before,#no .heart:after{background:var(--heart-black)}
+    /* para que el texto dentro del corazón se vea bien, lo ponemos rotado inverso */
+    .heart-inner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:100%;text-align:center;font-size:22px;color:white;pointer-events:none}
+    /* hover */
+    #yes .heart:hover{transform:rotate(-45deg) scale(1.06)}
+    /* cursor gatito: usamos emoji dentro de un div para que siempre cargue */
+    #cursor{
+      position:fixed;left:50%;top:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+      font-size:30px;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);transition:transform .06s linear;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.45);
     }
-    h1 {
-      font-size: 3rem;
-      margin: 0.5em;
-      padding: 0 1em;
+    /* confetti (emojis) */
+    .confetti{
+      position:fixed;left:0;top:0;font-size:20px;pointer-events:none;opacity:1;
+      animation:fall linear forwards;
+      text-shadow:0 2px 4px rgba(0,0,0,0.35);
     }
-    @media (max-width: 600px) {
-      h1 { font-size: 2rem; }
+    @keyframes fall{
+      0%{transform:translateY(-10vh) rotate(0deg);opacity:1}
+      100%{transform:translateY(110vh) rotate(360deg);opacity:0}
     }
-    /* Corazones de respuesta */
-    #hearts {
-      position: relative;
-      display: flex;
-      flex-direction: row;
-      gap: 2rem;
-      margin-top: 1em;
-    }
-    .heart-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      position: relative;
-    }
-    .heart-text {
-      margin-bottom: 0.5em;
-      color: #fff;
-      font-size: 1.5rem;
-      z-index: 1;
-      text-shadow: 0 0 5px #000;
-    }
-    /* Forma de corazón con CSS (basado en pseudo-elementos)12 */
-    .heart-shape {
-      width: 100px; height: 90px;
-      background: pink;
-      position: relative;
-      transform: rotate(-45deg);
-      margin: 0.5em;
-    }
-    .heart-shape:before,
-    .heart-shape:after {
-      content: "";
-      position: absolute;
-      width: 100px; height: 90px;
-      background: pink;
-      border-radius: 50%;
-    }
-    .heart-shape:before { top: -50px; left: 0; }
-    .heart-shape:after  { left: 50px; top: 0; }
-    /* Colores para cada opción */
-    #yesOption .heart-shape {
-      background: #f1a3c5;
-    }
-    #yesOption .heart-shape:before,
-    #yesOption .heart-shape:after {
-      background: #f1a3c5;
-    }
-    #noOption .heart-shape {
-      background: #000;
-    }
-    #noOption .heart-shape:before,
-    #noOption .heart-shape:after {
-      background: #000;
-    }
-    #noOption .heart-text {
-      color: #f8c1d0;
-      text-shadow: 0 0 5px #000;
-    }
-    /* Imagen de cursor personalizada */
-    #cursor {
-      position: absolute;
-      width: 40px; height: 40px;
-      z-index: 1000;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-    }
-    /* Confetti de gatitos */
-    .confetti {
-      position: absolute;
-      font-size: 24px;
-      animation: fall 3s linear;
-      pointer-events: none;
-    }
-    @keyframes fall {
-      0%   { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(100vh); }
-    }
-    /* Brillos (glitter) */
-    .glitter {
-      position: absolute;
-      width: 3px; height: 3px;
-      background: rgba(255,255,255,0.8);
-      border-radius: 50%;
-      opacity: 0;
-      animation: sparkle 4s infinite;
-    }
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; }
-      50%      { opacity: 1; }
+
+    /* responsivo corazón más chico en móvil */
+    @media (max-width:420px){
+      .heart{width:86px;height:78px}
+      .heart:before,.heart:after{width:86px;height:78px;border-radius:44px}
+      .heart-inner{font-size:18px}
+      .label{font-size:18px}
     }
   </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
-  <div id="container">
-    <h1>fd, ¿querés pasar este 14 juntos?</h1>
-    <div id="hearts">
-      <div class="heart-option" id="yesOption">
-        <div class="heart-text">Sí</div>
-        <div class="heart-shape"></div>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <div id="wrap" aria-hidden="false">
+    <div class="card-like" role="main">
+      <h1>fd, ¿querés pasar este 14 juntos?</h1>
+
+      <div id="hearts" aria-hidden="false">
+        <div class="option" id="yes" role="button" tabindex="0" aria-label="Si">
+          <div class="label" style="color:#fff">Sí</div>
+          <div class="heart" aria-hidden="true"><div class="heart-inner"> </div></div>
+        </div>
+
+        <div class="option" id="no" role="button" tabindex="0" aria-label="No">
+          <div class="label" style="color:#f8c1d0">No</div>
+          <div class="heart" aria-hidden="true"><div class="heart-inner"> </div></div>
+        </div>
       </div>
-      <div class="heart-option" id="noOption">
-        <div class="heart-text">No</div>
-        <div class="heart-shape"></div>
-      </div>
+
+      <p class="signature">Fran 🌷</p>
     </div>
   </div>
-  <!-- Cursor personalizado: imagen de gato en base64 -->
-  <img id="cursor" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAABUzhmAAAAAXNSR0IArs4c6QAAABxpRE9UAAAAAgAAAAAAAABBbWwgQ29yZSBrb290IHNvZnQgZGlnZXN0ZXIgc3llbmEKIQAAANYSURBVHgB7Zh7SgNBEIb7qTRRoEDi3gUeBA4gpAIhgEIQVhE2QrsHdWKRCCGLAhNBAjwEQsIDNDFYpBdgJSXLBl+aZ+bW5szuzvgvUdKkc2Z5d7fW9+TFX6jKRffO6oSGpAJSoAlOQCUqAlOkAlOoJbQFw92MFv3EEuLRWAGGwIAHGMYgnL8Bgm52m7/M4w4n3sPrCtWIi4D6Y2cDHBKAnARVLLeIsBtliGxPWIzClV1wawLnBsebfmyW+34a0poSjw33A6+Pg29IQVMWVNsHuDXstD1sYJaAXOSB3BoQ/W5nXAHjIKB6cUldvpUbGAhNpMAR...">
+
+  <!-- cursor-gatito (emoji, movimiento con JS) -->
+  <div id="cursor">🐈</div>
+
   <script>
-    // Variables de canvas
-    const canvas = document.getElementById('canvas');
+    // ---------- Fondo canvas: líneas dibujadas a mano y corazones decor ----------
+    const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d');
-    let W = window.innerWidth, H = window.innerHeight;
-
-    // Redimensionar canvas y dibujar fondo
-    function resizeCanvas() {
-      W = window.innerWidth; H = window.innerHeight;
-      canvas.width = W; canvas.height = H;
-      drawBackground();
+    function fitCanvas(){
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+      drawBg();
     }
-    window.addEventListener('resize', resizeCanvas);
-
-    function drawBackground() {
-      // Fondo rosa
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#f8c1d0'; // base pink
-      ctx.fillRect(0, 0, W, H);
-      // Líneas blancas aleatorias (estilo dibujado a mano)
-      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-      for (let i = 0; i < 10; i++) {
-        ctx.lineWidth = Math.random()*3 + 1;
+    window.addEventListener('resize', fitCanvas);
+    function drawBg(){
+      const W = canvas.width, H = canvas.height;
+      // fondo
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#f8c1d0';
+      ctx.fillRect(0,0,W,H);
+      // líneas "dibujadas a mano" horizontales/verticales
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      for(let i=0;i<12;i++){
+        ctx.lineWidth = 1 + Math.random()*3; // grosores distintos
         ctx.beginPath();
-        if (Math.random() < 0.5) {
-          // horizontal
-          let y = Math.random()*H;
-          ctx.moveTo(0, y);
-          for (let j=1; j<=10; j++){
-            let x = j*(W/10);
-            let deltaY = (Math.random()-0.5)*20;
-            ctx.lineTo(x, y + deltaY);
+        if(Math.random()<0.5){
+          // horizontal-ish with small wobble
+          let y = (i+1)*(H/13) + (Math.random()-0.5)*18;
+          ctx.moveTo(0,y);
+          for(let x=0;x<=W;x+=W/20){
+            ctx.lineTo(x, y + (Math.random()-0.5)*18);
           }
         } else {
-          // vertical
-          let x = Math.random()*W;
-          ctx.moveTo(x, 0);
-          for (let j=1; j<=10; j++){
-            let y = j*(H/10);
-            let deltaX = (Math.random()-0.5)*20;
-            ctx.lineTo(x + deltaX, y);
+          let x = (i+1)*(W/13) + (Math.random()-0.5)*18;
+          ctx.moveTo(x,0);
+          for(let y=0;y<=H;y+=H/20){
+            ctx.lineTo(x + (Math.random()-0.5)*18, y);
           }
         }
         ctx.stroke();
       }
-      // Dibujar corazones decorativos en el fondo
-      function drawHeart(x, y, size, color, alpha) {
+      // corazones decorativos (dibujados con curvas simples)
+      function drawHeart(cx, cy, s, color, alpha){
         ctx.save();
-        ctx.translate(x, y);
-        ctx.scale(size, size);
+        ctx.translate(cx, cy);
+        ctx.scale(s,s);
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(0, -0.5, -0.5, -0.5, -0.5, -0.1);
-        ctx.bezierCurveTo(-0.5, 0.2, -0.2, 0.35, 0, 0.5);
-        ctx.bezierCurveTo(0.2, 0.35, 0.5, 0.2, 0.5, -0.1);
-        ctx.bezierCurveTo(0.5, -0.5, 0, -0.5, 0, 0);
+        ctx.moveTo(0,-20);
+        ctx.bezierCurveTo(-25,-40,-60,-10,-10,20);
+        ctx.bezierCurveTo(-5,30,5,34,10,20);
+        ctx.bezierCurveTo(60,-10,25,-40,0,-20);
         ctx.closePath();
         ctx.fillStyle = color;
         ctx.globalAlpha = alpha;
         ctx.fill();
         ctx.restore();
+        ctx.globalAlpha = 1;
       }
-      // Colores suaves para corazones de fondo
-      const colors = ['#f8c1d0','#f1a3c5','#ffd1dc'];
-      for (let i = 0; i < 8; i++) {
-        let size = (Math.random()*0.8 + 0.3) * 50;
-        let x = Math.random() * (W - size*2) + size;
-        let y = Math.random() * (H - size*2) + size;
-        let color = colors[Math.floor(Math.random()*colors.length)];
-        drawHeart(x, y, size/50, color, 0.4);
-      }
-    }
-    resizeCanvas();
-
-    // Generar brillos (glitter)
-    function createGlitter() {
-      const count = 30;
-      for (let i = 0; i < count; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.classList.add('glitter');
-        sparkle.style.left = Math.random()*100 + 'vw';
-        sparkle.style.top = Math.random()*100 + 'vh';
-        sparkle.style.animationDuration = (2 + Math.random()*3) + 's';
-        sparkle.style.animationDelay = (Math.random()*5) + 's';
-        document.body.appendChild(sparkle);
+      const colors = ['#ffd1dc','#f1a3c5','#fff0f4'];
+      for(let i=0;i<8;i++){
+        const s = (Math.random()*0.9+0.3);
+        const x = Math.random()*(W-100)+50;
+        const y = Math.random()*(H-200)+80;
+        drawHeart(x,y,s, colors[Math.floor(Math.random()*colors.length)], 0.35);
       }
     }
-    createGlitter();
+    fitCanvas();
 
-    // Lógica de cursor personalizado y evasión
+    // ---------- glitter (divs) ----------
+    function createGlitter(n=30){
+      for(let i=0;i<n;i++){
+        const d = document.createElement('div');
+        d.className = 'glitter';
+        d.style.left = (Math.random()*100) + 'vw';
+        d.style.top  = (Math.random()*100) + 'vh';
+        d.style.animationDuration = (2+Math.random()*4)+'s';
+        d.style.animationDelay = (Math.random()*3)+'s';
+        document.body.appendChild(d);
+      }
+    }
+    createGlitter(28);
+
+    // ---------- cursor-gatito y evasión del NO ----------
     const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => {
-      // Mover imagen de gato con el ratón
+    const noOption = document.getElementById('no');
+    const yesOption = document.getElementById('yes');
+
+    document.addEventListener('mousemove', e=>{
       cursor.style.left = e.clientX + 'px';
       cursor.style.top  = e.clientY + 'px';
-      // Detectar cercanía al corazón "No"
-      const noHeart = document.getElementById('noOption');
-      const rect = noHeart.getBoundingClientRect();
+      cursor.style.transform = 'translate(-50%,-50%) scale(1.02)';
+
+      // evitar que el "No" se pueda clickear: lo empujamos lejos si el cursor se acerca
+      const rect = noOption.getBoundingClientRect();
       const hx = rect.left + rect.width/2;
-      const hy = rect.top  + rect.height/2;
+      const hy = rect.top + rect.height/2;
       const dx = hx - e.clientX;
       const dy = hy - e.clientY;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 100) {
-        // Si el cursor está cerca, desplazar el corazón lejos
-        const moveX = (dx/dist) * 50;
-        const moveY = (dy/dist) * 50;
-        noHeart.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      const dist = Math.hypot(dx,dy);
+      if(dist < 110){
+        // empujar lejos (vector normalizado * distancia)
+        const nx = (dx/dist || 0) * 90; // evita NaN
+        const ny = (dy/dist || 0) * 70;
+        noOption.style.transform = `translate(${nx}px, ${ny}px)`;
+      } else {
+        noOption.style.transform = 'translate(0,0)';
       }
     });
 
-    // Confetti de gatitos al hacer clic en "Sí"
-    document.getElementById('yesOption').addEventListener('click', e => {
-      for (let i = 0; i < 20; i++) {
-        const cat = document.createElement('div');
-        cat.classList.add('confetti');
-        cat.textContent = '😺';
-        // Posición horizontal aleatoria cerca del centro
-        cat.style.left = (window.innerWidth * 0.5 + (Math.random()-0.5)*200) + 'px';
-        cat.style.top = '0px';
-        cat.style.fontSize = (20 + Math.random()*20) + 'px';
-        document.body.appendChild(cat);
-        // Eliminar tras la animación
-        setTimeout(() => cat.remove(), 3000);
+    // También evitar clicks por teclado accidental en "No"
+    noOption.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation(); });
+
+    // ---------- confetti de gatitos (emojis) al click en Sí ----------
+    function makeConfetti(count=22){
+      for(let i=0;i<count;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.textContent = ['😺','😸','😻','🐱','💘','💖'][Math.floor(Math.random()*6)];
+        const startX = window.innerWidth*0.5 + (Math.random()-0.5)*260;
+        el.style.left = startX + 'px';
+        el.style.top  = (-20 - Math.random()*80) + 'px';
+        el.style.fontSize = (18 + Math.random()*28) + 'px';
+        el.style.animationDuration = (3 + Math.random()*2) + 's';
+        el.style.transform = `rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(el);
+        setTimeout(()=> el.remove(), 5200);
       }
+    }
+    yesOption.addEventListener('click', e=>{
+      makeConfetti(26);
+      // pequeña micro-interacción: agrandar corazon por un momento
+      const heartEl = yesOption.querySelector('.heart');
+      heartEl.style.transform = 'rotate(-45deg) scale(1.08)';
+      setTimeout(()=> heartEl.style.transform = 'rotate(-45deg) scale(1)', 500);
     });
-    // Prevenir que "No" sea clickeable directamente
-    document.getElementById('noOption').addEventListener('click', e => {
-      e.preventDefault();
-    });
+
+    // accesibilidad: Enter/Space trigger
+    yesOption.addEventListener('keydown', ev=>{ if(ev.key === 'Enter' || ev.key === ' ') { yesOption.click(); } });
+    noOption.addEventListener('keydown', ev=>{ if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); } });
+
+    // evitamos que el no sea foco persistente (lo devolvemos si cambian ventana)
+    window.addEventListener('blur', ()=> noOption.style.transform='translate(0,0)');
   </script>
 </body>
 </html>
