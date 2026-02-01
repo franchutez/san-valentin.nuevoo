@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fd 💖</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
@@ -12,10 +12,10 @@
       --heart-pink:#f1a3c5;
       --heart-black:#000000;
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;}
     html,body{
-      height:100%;
       margin:0;
+      height:100%;
       font-family:'Pacifico',cursive;
       background:var(--pink);
       overflow:hidden;
@@ -25,7 +25,7 @@
       align-items:center;
     }
 
-    /* canvas fondo líneas y corazones */
+    /* canvas fondo */
     #bgCanvas{
       position:fixed;
       top:0;
@@ -35,7 +35,7 @@
       z-index:-2;
     }
 
-    /* glitter (divs) */
+    /* Glitter animado */
     .glitter{
       position:fixed;
       width:4px;
@@ -47,45 +47,50 @@
       animation:spark 4s linear infinite;
     }
     @keyframes spark{
-      0%{opacity:0}
-      40%{opacity:1}
-      100%{opacity:0}
+      0%{opacity:0;}
+      40%{opacity:1;}
+      100%{opacity:0;}
     }
 
-    /* tarjeta central */
+    /* Contenedor tarjeta */
     #wrap{
       position:relative;
-      text-align:center;
-      z-index:5;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       padding:20px;
+      text-align:center;
+      z-index:10;
     }
-    .card-like{
-      background:rgba(255,255,255,0.06);
-      padding:28px 20px;
-      border-radius:22px;
+    .card{
+      background:rgba(255,255,255,0.08);
+      padding:40px 25px;
+      border-radius:25px;
       max-width:500px;
-      margin:auto;
+      width:100%;
     }
 
     h1{
       color:var(--bordo);
       font-size:clamp(28px,6vw,56px);
       margin:0 0 25px;
-      line-height:1.05;
+      line-height:1.1;
     }
+
     p.signature{
       margin-top:18px;
       color:var(--bordo);
       font-size:18px;
     }
 
-    /* corazones Sí/No */
+    /* Opciones Sí/No */
     #hearts{
       display:flex;
-      gap:40px;
+      gap:50px;
       justify-content:center;
       align-items:flex-start;
-      margin-top:12px;
+      margin-top:15px;
     }
     .option{
       display:flex;
@@ -94,18 +99,18 @@
       user-select:none;
     }
     .label{
-      font-size:22px;
-      margin-bottom:8px;
-      color:#fff;
+      font-size:20px;
+      margin-bottom:10px;
       filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+      color:#fff;
     }
 
+    /* corazones */
     .heart{
       width:120px;
       height:110px;
       position:relative;
       transform:rotate(-45deg);
-      display:block;
       transition:transform .28s ease;
     }
     .heart:before,.heart:after{
@@ -114,14 +119,9 @@
       width:120px;
       height:110px;
       border-radius:60px;
-      background:var(--heart-pink);
     }
-    .heart:before{top:-55px;left:0}
-    .heart:after{left:55px;top:0}
-
-    #yes .heart,#yes .heart:before,#yes .heart:after{background:var(--heart-pink)}
-    #no .heart,#no .heart:before,#no .heart:after{background:var(--heart-black)}
-
+    .heart:before{top:-55px; left:0;}
+    .heart:after{left:55px; top:0;}
     .heart-inner{
       position:absolute;
       left:50%;
@@ -129,12 +129,15 @@
       transform:translate(-50%,-50%) rotate(45deg);
       width:100%;
       text-align:center;
-      font-size:26px;
+      font-size:22px;
       color:white;
       pointer-events:none;
     }
 
-    #yes .heart:hover{transform:rotate(-45deg) scale(1.08)}
+    #yes .heart, #yes .heart:before, #yes .heart:after{background:var(--heart-pink);}
+    #no .heart, #no .heart:before, #no .heart:after{background:var(--heart-black);}
+
+    #yes .heart:hover{transform:rotate(-45deg) scale(1.08);}
 
     /* cursor-gatito */
     #cursor{
@@ -151,4 +154,177 @@
       pointer-events:none;
       transform:translate(-50%,-50%);
       transition:transform .06s linear;
-      text-shadow: 0 2px 6px rgba(0
+      text-shadow:0 2px 6px rgba(0,0,0,0.45);
+    }
+
+    /* Confetti */
+    .confetti{
+      position:fixed;
+      left:0;
+      top:0;
+      font-size:20px;
+      pointer-events:none;
+      opacity:1;
+      animation:fall linear forwards;
+      text-shadow:0 2px 4px rgba(0,0,0,0.35);
+    }
+    @keyframes fall{
+      0%{transform:translateY(-10vh) rotate(0deg);opacity:1}
+      100%{transform:translateY(110vh) rotate(360deg);opacity:0}
+    }
+
+    /* Mobile */
+    @media(max-width:420px){
+      .heart{width:86px;height:78px}
+      .heart:before,.heart:after{width:86px;height:78px;border-radius:44px;}
+      .heart-inner{font-size:18px;}
+      .label{font-size:18px;}
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <div id="wrap">
+    <div class="card">
+      <h1>fd, ¿querés pasar este 14 juntos?</h1>
+      <div id="hearts">
+        <div class="option" id="yes">
+          <div class="label">Sí</div>
+          <div class="heart"><div class="heart-inner"></div></div>
+        </div>
+        <div class="option" id="no">
+          <div class="label" style="color:#f8c1d0">No</div>
+          <div class="heart"><div class="heart-inner"></div></div>
+        </div>
+      </div>
+      <p class="signature">Fran 🌷</p>
+    </div>
+  </div>
+
+  <div id="cursor">🐈</div>
+
+  <script>
+    // ----------------- fondo líneas y corazones
+    const canvas=document.getElementById('bgCanvas');
+    const ctx=canvas.getContext('2d');
+    function fitCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;drawBg();}
+    window.addEventListener('resize',fitCanvas);
+    function drawBg(){
+      const W=canvas.width,H=canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#f8c1d0';
+      ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,0.85)';
+      for(let i=0;i<12;i++){
+        ctx.lineWidth=1+Math.random()*3;
+        ctx.beginPath();
+        if(Math.random()<0.5){
+          let y=(i+1)*(H/13)+(Math.random()-0.5)*18;
+          ctx.moveTo(0,y);
+          for(let x=0;x<=W;x+=W/20){ctx.lineTo(x, y+(Math.random()-0.5)*18);}
+        }else{
+          let x=(i+1)*(W/13)+(Math.random()-0.5)*18;
+          ctx.moveTo(x,0);
+          for(let y=0;y<=H;y+=H/20){ctx.lineTo(x+(Math.random()-0.5)*18,y);}
+        }
+        ctx.stroke();
+      }
+      function drawHeart(cx,cy,s,color,alpha){
+        ctx.save();
+        ctx.translate(cx,cy);
+        ctx.scale(s,s);
+        ctx.beginPath();
+        ctx.moveTo(0,-20);
+        ctx.bezierCurveTo(-25,-40,-60,-10,-10,20);
+        ctx.bezierCurveTo(-5,30,5,34,10,20);
+        ctx.bezierCurveTo(60,-10,25,-40,0,-20);
+        ctx.closePath();
+        ctx.fillStyle=color;
+        ctx.globalAlpha=alpha;
+        ctx.fill();
+        ctx.restore();
+        ctx.globalAlpha=1;
+      }
+      const colors=['#ffd1dc','#f1a3c5','#fff0f4'];
+      for(let i=0;i<8;i++){
+        const s=(Math.random()*0.9+0.3);
+        const x=Math.random()*(W-100)+50;
+        const y=Math.random()*(H-200)+80;
+        drawHeart(x,y,s, colors[Math.floor(Math.random()*colors.length)],0.35);
+      }
+    }
+    fitCanvas();
+
+    // ----------------- glitter
+    function createGlitter(n=30){
+      for(let i=0;i<n;i++){
+        const d=document.createElement('div');
+        d.className='glitter';
+        d.style.left=(Math.random()*100)+'vw';
+        d.style.top=(Math.random()*100)+'vh';
+        d.style.animationDuration=(2+Math.random()*4)+'s';
+        d.style.animationDelay=(Math.random()*3)+'s';
+        document.body.appendChild(d);
+      }
+    }
+    createGlitter(40);
+
+    // ----------------- cursor gatito
+    const cursor=document.getElementById('cursor');
+    const noOption=document.getElementById('no');
+    const yesOption=document.getElementById('yes');
+
+    document.addEventListener('mousemove',e=>{
+      cursor.style.left=e.clientX+'px';
+      cursor.style.top=e.clientY+'px';
+      cursor.style.transform='translate(-50%,-50%) scale(1.02)';
+
+      const rect=noOption.getBoundingClientRect();
+      const hx=rect.left+rect.width/2;
+      const hy=rect.top+rect.height/2;
+      const dx=hx-e.clientX;
+      const dy=hy-e.clientY;
+      const dist=Math.hypot(dx,dy);
+      if(dist<110){
+        const nx=(dx/dist||0)*90;
+        const ny=(dy/dist||0)*70;
+        noOption.style.transform=`translate(${nx}px, ${ny}px)`;
+      }else{
+        noOption.style.transform='translate(0,0)';
+      }
+    });
+
+    noOption.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();});
+
+    // ----------------- confetti gatitos
+    function makeConfetti(count=25){
+      for(let i=0;i<count;i++){
+        const el=document.createElement('div');
+        el.className='confetti';
+        el.textContent=['😺','😸','😻','🐱','💘','💖'][Math.floor(Math.random()*6)];
+        const startX=window.innerWidth*0.5 + (Math.random()-0.5)*260;
+        el.style.left=startX+'px';
+        el.style.top=(-20-Math.random()*80)+'px';
+        el.style.fontSize=(18+Math.random()*28)+'px';
+        el.style.animationDuration=(3+Math.random()*2)+'s';
+        el.style.transform=`rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(),5200);
+      }
+    }
+
+    yesOption.addEventListener('click',()=>{
+      makeConfetti(26);
+      const heartEl=yesOption.querySelector('.heart');
+      heartEl.style.transform='rotate(-45deg) scale(1.08)';
+      setTimeout(()=>heartEl.style.transform='rotate(-45deg) scale(1)',500);
+    });
+
+    yesOption.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){yesOption.click();}});
+    noOption.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();}});
+    window.addEventListener('blur',()=> noOption.style.transform='translate(0,0)');
+  </script>
+</body>
+</html>
